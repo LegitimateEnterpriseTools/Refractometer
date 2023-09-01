@@ -1,0 +1,28 @@
+{
+	"dependencies": {
+		"@babel/preset-env": "^7.22.10",
+		"@babel/preset-react": "^7.22.5",
+		"@material-ui/core": "^4.12.4",
+		"@nivo/bar": "^0.83.0",
+		"babel-preset-preact": "^2.0.0",
+		"babelify": "^10.0.0",
+		"imgurify": "^2.0.1",
+		"konva": "^9.2.0",
+		"mobx-preact": "^3.0.0",
+		"preact": "^10.17.1",
+		"react": "npm:@preact/compat",
+		"react-dom": "npm:@preact/compat",
+		"styled-jsx": "^5.1.2"
+	},
+	"devDependencies": {
+		"browserify": "^17.0.0",
+		"http-server": "^14.1.1",
+		"watchify": "^4.0.0"
+	},
+	"browserify": {},
+	"scripts": {
+		"server": "http-server -p 80",
+		"build": "browserify ./index.jsx -o ./build.js -g babelify -t imgurify -d --verbose",
+		"watch": "watchify ./index.jsx -o ./build.js -g babelify -t imgurify -d --verbose"
+	}
+}
