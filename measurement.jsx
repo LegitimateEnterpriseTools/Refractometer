@@ -20,7 +20,7 @@ const measure = function(){
         return
     }
 
-    const [x1, y1, x2, y2] = streamStore.measurementLine.points().map(Math.round);
+    const [x1, y1, x2, y2] = streamStore.measurementLine.points().map(Math.round); //get vertical line vector (x1 == x2)
 
     const vector = [];
 
@@ -28,13 +28,15 @@ const measure = function(){
     let maxIndex = 0;
     let currentMax = 0;
     let imageWidth = streamStore.imageData.width;
-    let imageData = streamStore.imageData;
+    let imageData = streamStore.imageData.data;
 
+    //loop through the vertical line vector and get the average pixel value for each pixel
     for(let y = y1; y <= y2; y++){
-        const value = ([-4, -3, -2, -1, 0, 1, 2, 3, 4].reduce(function(acc, val){
-            return acc + imageData.data[(y * imageWidth + x1 + val) * 4];
+        const value = ([-4, -3, -2, -1, 0, 1, 2, 3, 4].reduce(function(acc, val){ //we're averaging 9 horizontal pixels to smooth measurement
+            return acc + imageData[(y * imageWidth + x1 + val) * 4];
         }, 0) / 9) || 1;
 
+        //push the pixel value to the vector to plot
         vector.push({
             x : index++,
             value,
@@ -42,18 +44,20 @@ const measure = function(){
             width : 1
         });
 
+        //keep track of the max value and index
         if(vector[vector.length - 1].value > currentMax){
             currentMax = vector[vector.length - 1].value;
             maxIndex = index - 1;
         }
     }
 
-    let search = vector.slice(0, maxIndex + 1).reverse();
+    let search = vector.slice(0, maxIndex + 1).reverse(); //search the vector from the max value to the start
     let measured = vector[search.length - 1 - search.findIndex(function({ value }, index){
+         //find the first value that is less than half the max value
         return search[index + 1]?.value < currentMax / 2;
     })]
     
-    measured.threshhold = true;
+    measured.threshhold = true; //mark the threshhold value for the chart renderer
 
     //set measurement value to trigger render
     runInAction(function(){ //Basic idea is to get the percentage of the measured value relative to the pixel vector measurement line and multiply it by the user measurement range
@@ -115,8 +119,8 @@ module.exports = observer(function({ data }){
                     flex: 1;
                     display: flex;
                     flex-direction: column;
-                    height: ${config.measureHeight}px;
-                    background-color: #b5c8d7;
+                    height: ${config.renderHeight}px;
+                    background-color: ${config.backgroundColor};
                     position: relative;
                     margin-left: -1px;
                 }

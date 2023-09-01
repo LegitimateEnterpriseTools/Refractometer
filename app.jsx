@@ -7,6 +7,7 @@ const { useEffect } = require("react");
 
 //Set the config values for the app viewport width and height
 runInAction(function(){
+    config.backgroundColor = "#b5c8d7";
     config.vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
     config.vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
     config.streamWidth = 0.8;
@@ -15,6 +16,7 @@ runInAction(function(){
 module.exports = observer(function({ data }){
     useEffect(action(function(){
         document.body.style.margin = "0px";
+        document.body.style.backgroundColor = config.backgroundColor;
     }));
     
     return <>
