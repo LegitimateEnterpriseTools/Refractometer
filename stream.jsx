@@ -24,9 +24,15 @@ module.exports = observer(function({ data }){
             const videoCanvas = new OffscreenCanvas(video.width, video.height);
             const videoCtx = videoCanvas.getContext("2d");
             
-            //Get video dimensions and calculate config values
-            const renderWidth = config.renderWidth = Math.round(config.vw * config.streamWidth);
-            config.renderHeight = Math.round(renderWidth / (config.vw / config.vh));
+            //Get video dimensions and calculate config values so we can render the video with the correct aspect ratio using max height
+            config.renderHeight = config.vh;
+            const renderWidth = config.renderWidth = Math.round(config.renderHeight * streamSettings.aspectRatio); 
+            if(renderWidth > Math.round(config.vw * config.streamWidth)){ //support mobile and portrait screens
+                config.renderWidth = Math.round(config.vw * config.streamWidth);
+                config.renderHeight = Math.round(config.renderWidth / streamSettings.aspectRatio);
+            }
+
+
 
             //create a transform video canvas for upscaling video stream
             const transformCanvas = new OffscreenCanvas(video.width, video.height);
